@@ -40,6 +40,7 @@ model GameSession{
   targets Target[]
   playerName String?
   timeCreated DateTime @default(now())
+  timeCompleted DateTime?
 }
 
 model Target{

@@ -1,10 +1,10 @@
 const express = require('express');
 const { PrismaClient } = require('@prisma/client');
 
-const imagesRouter = express();
+const homeRouter = express();
 const prisma = new PrismaClient();
 
-imagesRouter.get('/', async (req, res) => {
+homeRouter.get('/', async (req, res) => {
   try {
     const images = await prisma.image.findMany();
 
@@ -14,4 +14,4 @@ imagesRouter.get('/', async (req, res) => {
   }
 });
 
-module.exports = imagesRouter;
+module.exports = homeRouter;

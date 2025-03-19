@@ -84,4 +84,36 @@ const processTargetGuess = async (req, res, next) => {
   } else return res.json({ isFound: false });
 };
 
-module.exports = { startNewGame, processTargetGuess };
+const checkForCompletion = async (req, res, next) => {
+  const username = req.body.username;
+
+  const gameSession = await prisma.gameSession.findUnique({
+    where: {
+      id: req.gameSession.id,
+    },
+    include: {
+      targets: true,
+    },
+  });
+
+  if (!gameSession)
+    return res.status(401).json({ message: 'Session not found' });
+
+  if (gameSession.targets.some((target) => !target.isFound))
+    return res.status(401).json({ message: 'Targets not found' });
+  else {
+    const gameSessionObj = await prisma.gameSession.update({
+      where: {
+        id: req.gameSession.id,
+      },
+      data: {
+        timeCompleted: new Date(),
+        playerName: username,
+      },
+    });
+
+    return res.json({ isCompleted: true, gameSession: gameSessionObj });
+  }
+};
+
+module.exports = { startNewGame, processTargetGuess, checkForCompletion };

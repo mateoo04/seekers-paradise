@@ -11,7 +11,7 @@ app.use('/api/game', gameRouter);
 
 describe('Game API Endpoints', () => {
   let token = '';
-  let piggy;
+  let piggy, clown;
 
   it('should start a new game, return the image URL and targets', async () => {
     const res = await request(app).get('/api/game/viking-raid');
@@ -21,8 +21,13 @@ describe('Game API Endpoints', () => {
 
     expect(res.body).toHaveProperty('image');
     expect(res.body.targets.length).toBeGreaterThan(1);
+
     piggy = res.body.targets.find(
       (target) => target.character.name === 'Piggy'
+    );
+
+    clown = res.body.targets.find(
+      (target) => target.character.name === 'Clown'
     );
   });
 
@@ -52,5 +57,39 @@ describe('Game API Endpoints', () => {
       });
 
     expect(res.body.isFound).toBe(true);
+  });
+
+  it('should respond negatively to completion check', async () => {
+    const res = await request(app)
+      .post('/api/game/completed')
+      .set('Content-Type', 'application/json')
+      .set('Authorization', token)
+      .send({ username: 'Mateo' });
+
+    expect(res.statusCode).toBe(401);
+  });
+
+  it('should return true after a successful guess', async () => {
+    const res = await request(app)
+      .post('/api/game/target')
+      .set('Content-Type', 'application/json')
+      .set('Authorization', token)
+      .send({
+        clickX: 34.225,
+        clickY: 33.7,
+        targetId: clown.id,
+      });
+
+    expect(res.body.isFound).toBe(true);
+  });
+
+  it('should respond positively to completion check', async () => {
+    const res = await request(app)
+      .post('/api/game/completed')
+      .set('Content-Type', 'application/json')
+      .set('Authorization', token)
+      .send({ username: 'Mateo' });
+
+    expect(res.body.isCompleted).toBe(true);
   });
 });
