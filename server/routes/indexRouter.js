@@ -1,10 +1,10 @@
 const express = require('express');
-const homeRouter = require('./homeRouter');
+const imagesRouter = require('./imagesRouter');
 const gameRouter = require('./gameRouter');
 
 const indexRouter = express();
 
-indexRouter.use('/images', homeRouter);
+indexRouter.use('/images', imagesRouter);
 indexRouter.use('/game', gameRouter);
 
 module.exports = indexRouter;

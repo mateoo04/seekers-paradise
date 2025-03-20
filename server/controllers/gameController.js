@@ -49,9 +49,11 @@ const startNewGame = async (req, res, next) => {
 };
 
 const processTargetGuess = async (req, res, next) => {
-  const clickX = req.body.clickX;
-  const clickY = req.body.clickY;
-  const targetId = req.body.targetId;
+  const { clickX, clickY, targetId } = req.body;
+
+  if (!clickX || !clickY || !targetId) return res.status(401);
+
+  const currentTime = new Date();
 
   const target = await prisma.target.findUnique({
     where: { id: targetId },
@@ -60,7 +62,20 @@ const processTargetGuess = async (req, res, next) => {
     },
   });
 
-  if (target.isFound)
+  const gameSession = await prisma.gameSession.findUnique({
+    where: {
+      id: req.gameSession.id,
+    },
+    include: {
+      targets: true,
+    },
+  });
+
+  const selectedTarget = gameSession.targets.find(
+    (target) => target.id == targetId
+  );
+
+  if (selectedTarget.isFound)
     return res.status(401).json({ message: 'That target was already found' });
 
   if (
@@ -78,13 +93,35 @@ const processTargetGuess = async (req, res, next) => {
       },
     });
 
+    let gameSessionStatus = {};
+    gameSessionStatus.isCompleted = true;
+
+    gameSession.targets.forEach((target) => {
+      if (!target.isFound && target.id !== targetId)
+        gameSessionStatus.isCompleted = false;
+    });
+    if (gameSessionStatus.isCompleted) {
+      const updatedGameSession = await prisma.gameSession.update({
+        where: {
+          id: req.gameSession.id,
+        },
+        data: {
+          timeCompleted: currentTime,
+        },
+      });
+
+      gameSessionStatus.gameDuration =
+        currentTime - updatedGameSession.timeCreated;
+    }
+
     return res.json({
       isFound: true,
+      gameSessionStatus,
     });
   } else return res.json({ isFound: false });
 };
 
-const checkForCompletion = async (req, res, next) => {
+const saveResults = async (req, res, next) => {
   const username = req.body.username;
 
   const gameSession = await prisma.gameSession.findUnique({
@@ -100,20 +137,22 @@ const checkForCompletion = async (req, res, next) => {
     return res.status(401).json({ message: 'Session not found' });
 
   if (gameSession.targets.some((target) => !target.isFound))
-    return res.status(401).json({ message: 'Targets not found' });
+    return res.status(401).json({
+      success: false,
+      message: 'Game session unfinished, all targets not found',
+    });
   else {
     const gameSessionObj = await prisma.gameSession.update({
       where: {
         id: req.gameSession.id,
       },
       data: {
-        timeCompleted: new Date(),
         playerName: username,
       },
     });
 
-    return res.json({ isCompleted: true, gameSession: gameSessionObj });
+    return res.json({ success: true, gameSession: gameSessionObj });
   }
 };
 
-module.exports = { startNewGame, processTargetGuess, checkForCompletion };
+module.exports = { startNewGame, processTargetGuess, saveResults };

@@ -3,10 +3,37 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import './scss/styles.scss';
 import * as bootstrap from 'bootstrap';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { ToastContainer, Slide } from 'react-toastify';
 import Game from './components/game/Game';
+import App from './components/app/App';
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <App />,
+  },
+  {
+    path: '/game/:name',
+    element: <Game />,
+  },
+]);
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <Game />
+    <RouterProvider router={router} />
+    <ToastContainer
+      position='top-right'
+      autoClose={5000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick={false}
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      theme='light'
+      transition={Slide}
+    />
   </StrictMode>
 );

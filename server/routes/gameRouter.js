@@ -2,7 +2,7 @@ const express = require('express');
 const {
   startNewGame,
   processTargetGuess,
-  checkForCompletion,
+  saveResults,
 } = require('../controllers/gameController');
 const { verifyToken } = require('../lib/utils');
 
@@ -12,6 +12,6 @@ gameRouter.get('/:imageName', startNewGame);
 
 gameRouter.post('/target', verifyToken, processTargetGuess);
 
-gameRouter.post('/completed', verifyToken, checkForCompletion);
+gameRouter.post('/saveResults', verifyToken, saveResults);
 
 module.exports = gameRouter;

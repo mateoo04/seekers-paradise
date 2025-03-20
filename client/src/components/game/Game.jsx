@@ -1,11 +1,48 @@
-import { useRef, useState } from 'react';
-import vikingsImg from '../../assets/vikings.webp';
+import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import CompletionModal from '../completionModal/completionModal';
+import Header from '../header/Header';
+
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function Game() {
+  const [imageUrl, setImageUrl] = useState('');
+  const [token, setToken] = useState('');
+  const [targets, setTargets] = useState([]);
+
   const [boxPosition, setBoxPosition] = useState({});
   const [selectBoxSize, setSelectBoxSize] = useState(0);
   const [dropdownPosition, setDropdownPosition] = useState({});
   const [isSelectionActive, setIsSelectionActive] = useState(false);
+  const [gameDuration, setGameDuration] = useState(null);
+
+  const clickPercentages = useRef({});
+
+  const { name } = useParams();
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}/game/${name}`, {
+          method: 'GET',
+        });
+
+        if (!response.ok) throw new Error('Failed to fetch images');
+
+        const json = await response.json();
+
+        setImageUrl(json.image.url);
+        setToken(json.token);
+        setTargets(json.targets);
+      } catch {
+        toast.error('Error fetching game data');
+      }
+    };
+
+    fetchPosts();
+  }, [name]);
 
   const handleImageClick = (e) => {
     const boxSize = e.target.width / 16;
@@ -13,6 +50,13 @@ export default function Game() {
     const rect = e.target.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
     const clickY = e.clientY - rect.top;
+
+    clickPercentages.x = (clickX / e.target.width) * 100;
+    clickPercentages.y = (clickY / e.target.height) * 100;
+
+    console.log(
+      `X: ${clickX / e.target.width}, Y: ${clickY / e.target.height}`
+    );
 
     const boxPositionObj = {};
     const dropdownPositionObj = {};
@@ -89,46 +133,107 @@ export default function Game() {
       setIsSelectionActive(false);
   };
 
+  const handleCharacterClick = async (selectedTarget) => {
+    try {
+      const response = await fetch(`${BASE_URL}/game/target`, {
+        method: 'POST',
+        headers: {
+          Authorization: token.token,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          clickX: clickPercentages.x,
+          clickY: clickPercentages.y,
+          targetId: selectedTarget.id,
+        }),
+      });
+
+      if (!response.ok) throw new Error('Error handling the target guess');
+
+      const json = await response.json();
+
+      if (json.isFound) {
+        toast.info(`Congrats, you found ${selectedTarget.character.name}!`);
+        const updatedTargets = targets.map((target) => {
+          if (target.id == selectedTarget.id)
+            return { ...target, isFound: true };
+          else return target;
+        });
+
+        setTargets(updatedTargets);
+        if (json.gameSessionStatus?.isCompleted) {
+          setGameDuration(json.gameSessionStatus.gameDuration);
+        }
+      } else {
+        toast.info(`That was not ${selectedTarget.character.name}`);
+      }
+    } catch {
+      toast.error('Error handling the target guess');
+    }
+  };
+
   return (
     <>
+      <Header />
       <main
         className='d-flex flex-column justify-content-center align-items-center'
         onClick={handleOutsideClick}
       >
-        <div className='imgContainer position-relative'>
-          <img src={vikingsImg} alt='' onClick={handleImageClick} />
-          <div
-            className='select-box position-absolute selection-element'
-            style={
-              boxPosition
-                ? {
-                    ...boxPosition,
-                    width: selectBoxSize,
-                    height: selectBoxSize,
-                    display: isSelectionActive ? 'unset' : 'none',
-                  }
-                : ''
-            }
-          ></div>
-          <div
-            className='list-group position-absolute selection-element'
-            style={{
-              ...dropdownPosition,
-              display: isSelectionActive ? 'unset' : 'none',
-            }}
-          >
-            <a href='#' className='list-group-item list-group-item-action'>
-              The current link item
-            </a>
-            <a href='#' className='list-group-item list-group-item-action'>
-              A second link item
-            </a>
-            <a href='#' className='list-group-item list-group-item-action'>
-              A third link item
-            </a>
+        {imageUrl ? (
+          <div className='img-container position-relative'>
+            <img
+              src={imageUrl}
+              alt=''
+              onClick={handleImageClick}
+              className='game-image'
+            />
+            <div
+              className='select-box position-absolute selection-element'
+              style={
+                boxPosition
+                  ? {
+                      ...boxPosition,
+                      width: selectBoxSize,
+                      height: selectBoxSize,
+                      display: isSelectionActive ? 'unset' : 'none',
+                    }
+                  : ''
+              }
+            ></div>
+            <div
+              className='list-group position-absolute selection-element'
+              style={{
+                ...dropdownPosition,
+                display: isSelectionActive ? 'unset' : 'none',
+              }}
+            >
+              {targets.map((target) => {
+                if (!target.isFound)
+                  return (
+                    <button
+                      onClick={() => handleCharacterClick(target)}
+                      className='list-group-item list-group-item-action'
+                      key={target.id}
+                    >
+                      {target.character.name}
+                    </button>
+                  );
+              })}
+            </div>
           </div>
-        </div>{' '}
+        ) : (
+          ' '
+        )}
       </main>
+      {gameDuration &&
+        createPortal(
+          <CompletionModal
+            onClose={() => setGameDuration(null)}
+            gameDuration={gameDuration}
+            token={token}
+          />,
+          document.body
+        )}
     </>
   );
 }

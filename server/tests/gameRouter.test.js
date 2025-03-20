@@ -59,9 +59,9 @@ describe('Game API Endpoints', () => {
     expect(res.body.isFound).toBe(true);
   });
 
-  it('should respond negatively to completion check', async () => {
+  it('should not save results of unfinished game', async () => {
     const res = await request(app)
-      .post('/api/game/completed')
+      .post('/api/game/saveResults')
       .set('Content-Type', 'application/json')
       .set('Authorization', token)
       .send({ username: 'Mateo' });
@@ -69,7 +69,7 @@ describe('Game API Endpoints', () => {
     expect(res.statusCode).toBe(401);
   });
 
-  it('should return true after a successful guess', async () => {
+  it('should return game duration time after a final successful guess', async () => {
     const res = await request(app)
       .post('/api/game/target')
       .set('Content-Type', 'application/json')
@@ -80,16 +80,16 @@ describe('Game API Endpoints', () => {
         targetId: clown.id,
       });
 
-    expect(res.body.isFound).toBe(true);
+    expect(res.body.gameSessionStatus).toHaveProperty('gameDuration');
   });
 
-  it('should respond positively to completion check', async () => {
+  it('should save results', async () => {
     const res = await request(app)
-      .post('/api/game/completed')
+      .post('/api/game/saveResults')
       .set('Content-Type', 'application/json')
       .set('Authorization', token)
       .send({ username: 'Mateo' });
 
-    expect(res.body.isCompleted).toBe(true);
+    expect(res.body.success).toBe(true);
   });
 });
