@@ -31,7 +31,13 @@ const startNewGame = async (req, res, next) => {
         image: true,
         targets: {
           include: {
-            character: true,
+            character: {
+              select: {
+                id: true,
+                name: true,
+                iconUrl: true,
+              },
+            },
           },
         },
       },
@@ -117,6 +123,8 @@ const processTargetGuess = async (req, res, next) => {
 
       return res.json({
         isFound: true,
+        x: target.character.xPercent,
+        y: target.character.yPercent,
         gameSessionStatus,
       });
     } else return res.json({ isFound: false });

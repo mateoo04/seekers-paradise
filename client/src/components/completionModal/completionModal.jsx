@@ -13,9 +13,11 @@ export default function CompletionModal({ onClose, gameDuration, token }) {
     modalInstance.show();
 
     const handleHidden = () => {
+      document.body.classList.remove('modal-open');
       document.querySelectorAll('.modal-backdrop').forEach((backdrop) => {
         backdrop.remove();
       });
+      document.body.style.overflow = '';
     };
 
     modalRef.current.addEventListener('hidden.bs.modal', handleHidden);
@@ -79,7 +81,7 @@ export default function CompletionModal({ onClose, gameDuration, token }) {
             </h3>{' '}
             <button
               type='button'
-              class='btn-close'
+              className='btn-close'
               data-bs-dismiss='modal'
               aria-label='Close'
               onClick={onClose}

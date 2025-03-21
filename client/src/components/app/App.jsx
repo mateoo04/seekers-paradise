@@ -85,16 +85,16 @@ export default function App() {
         <div className='ranking mb-5 border border-1 rounded-3 frosted'>
           <h2 className='sleek-letters text-center pt-2 pb-1'>Ranking</h2>
           <ul
-            class='nav nav-tabs justify-content-around sleek-letters bg-white mb-2'
+            className='nav nav-tabs justify-content-around sleek-letters bg-white mb-2'
             id='myTab'
             role='tablist'
           >
             {rankingTabs &&
               rankingTabs.map((tab, index) => {
                 return (
-                  <li class='nav-item'>
+                  <li className='nav-item' key={tab.name + '-tab'}>
                     <button
-                      class={`nav-link border-0 ${
+                      className={`nav-link border-0 ${
                         tabClicked == index ? 'fw-bold' : ''
                       }`}
                       id='profile-tab'

@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import CompletionModal from '../completionModal/completionModal';
 import Header from '../header/Header';
+import checkSvg from '../../assets/check.svg';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -156,7 +157,7 @@ export default function Game() {
         toast.info(`Congrats, you found ${selectedTarget.character.name}!`);
         const updatedTargets = targets.map((target) => {
           if (target.id == selectedTarget.id)
-            return { ...target, isFound: true };
+            return { ...target, isFound: true, x: json.x, y: json.y };
           else return target;
         });
 
@@ -209,6 +210,16 @@ export default function Game() {
                 onClick={handleImageClick}
                 className='game-image'
               />
+              {targets
+                .filter((target) => target.isFound)
+                .map((target) => (
+                  <img
+                    key={`check-${target.id}`}
+                    src={checkSvg}
+                    className='position-absolute target-check'
+                    style={{ top: `${target.y}%`, left: `${target.x}%` }}
+                  />
+                ))}
               <div
                 className='select-box position-absolute selection-element'
                 style={
