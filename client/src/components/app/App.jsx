@@ -62,35 +62,43 @@ export default function App() {
     <>
       <Header />
       <main className='container d-flex flex-column justify-content-center align-items-center'>
-        <div className='row g-3'>
-          {images.map((image) => {
-            return (
-              <div
-                className='col-12 col-sm-6 col-md-4'
-                onClick={() => navigate(`/game/${image.name}`)}
-                key={image.name}
-              >
-                <div className='card frosted'>
-                  <img src={image.url} alt='' />
-                  <div className='card-body'>
-                    <h2 className='sleek-letters user-select-none'>
-                      {image.title}
-                    </h2>
+        {images.length ? (
+          <div className='row g-3'>
+            {images.map((image) => {
+              return (
+                <div
+                  className='col-12 col-sm-6 col-md-4'
+                  onClick={() => navigate(`/game/${image.name}`)}
+                  key={image.name}
+                >
+                  <div className='card frosted'>
+                    <img src={image.url} alt='' />
+                    <div className='card-body'>
+                      <h2 className='sleek-letters user-select-none'>
+                        {image.title}
+                      </h2>
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
-        <div className='ranking mb-5 border border-1 rounded-3 frosted'>
-          <h2 className='sleek-letters text-center pt-2 pb-1'>Ranking</h2>
-          <ul
-            className='nav nav-tabs justify-content-around sleek-letters bg-white mb-2'
-            id='myTab'
-            role='tablist'
-          >
-            {rankingTabs &&
-              rankingTabs.map((tab, index) => {
+              );
+            })}
+          </div>
+        ) : (
+          <div className='d-flex justify-content-center position-absolute top-50 start-50 translate-middle"'>
+            <div className='spinner-border text-white' role='status'>
+              <span className='visually-hidden'>Loading...</span>
+            </div>
+          </div>
+        )}
+        {rankingTabs.length ? (
+          <div className='ranking mb-5 border border-1 rounded-3 frosted'>
+            <h2 className='sleek-letters text-center pt-2 pb-1'>Ranking</h2>
+            <ul
+              className='nav nav-tabs justify-content-around sleek-letters bg-white mb-2'
+              id='myTab'
+              role='tablist'
+            >
+              {rankingTabs.map((tab, index) => {
                 return (
                   <li className='nav-item' key={tab.name + '-tab'}>
                     <button
@@ -110,29 +118,32 @@ export default function App() {
                   </li>
                 );
               })}
-          </ul>
-          <table className='sleek-letters table-responsive bg-transparent'>
-            <thead>
-              <tr>
-                <th>Ranking</th>
-                <th>Name</th>
-                <th>Time (seconds)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {ranking &&
-                ranking.map((record, index) => {
-                  return (
-                    <tr>
-                      <th>{index + 1}</th>
-                      <td>{record.playerName}</td>
-                      <td>{record.gameDurationSeconds}</td>
-                    </tr>
-                  );
-                })}
-            </tbody>
-          </table>
-        </div>
+            </ul>
+            <table className='sleek-letters table-responsive bg-transparent'>
+              <thead>
+                <tr>
+                  <th>Ranking</th>
+                  <th>Name</th>
+                  <th>Time (seconds)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {ranking &&
+                  ranking.map((record, index) => {
+                    return (
+                      <tr key={`record-${index}`}>
+                        <th>{index + 1}</th>
+                        <td>{record.playerName}</td>
+                        <td>{record.gameDurationSeconds}</td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          ''
+        )}
       </main>
     </>
   );

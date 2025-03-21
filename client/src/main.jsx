@@ -2,7 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import './scss/styles.scss';
-import * as bootstrap from 'bootstrap';
+import 'bootstrap';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { ToastContainer, Slide } from 'react-toastify';
 import Game from './components/game/Game';
