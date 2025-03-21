@@ -9,6 +9,9 @@ export default function App() {
   const navigate = useNavigate();
 
   const [images, setImages] = useState([]);
+  const [rankingTabs, setRankingTabs] = useState([]);
+  const [ranking, setRanking] = useState([]);
+  const [tabClicked, setTabClicked] = useState(false);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -22,6 +25,11 @@ export default function App() {
         const json = await response.json();
 
         setImages(json.images);
+        setRankingTabs(
+          json.images.map((image) => ({ title: image.title, name: image.name }))
+        );
+        updateRanking(json.images.at(0).name);
+        setTabClicked(0);
       } catch {
         toast.error('Failed to fetch posts');
       }
@@ -30,11 +38,31 @@ export default function App() {
     fetchPosts();
   }, []);
 
+  const updateRanking = (imageName) => {
+    const fetchRanking = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}/ranking/${imageName}`, {
+          method: 'GET',
+        });
+
+        if (!response.ok) throw new Error('Failed to fetch ranking');
+
+        const json = await response.json();
+
+        setRanking(json.ranking);
+      } catch {
+        toast.error('Failed to fetch ranking');
+      }
+    };
+
+    fetchRanking();
+  };
+
   return (
     <>
       <Header />
       <main className='container d-flex flex-column justify-content-center align-items-center'>
-        <div className='row'>
+        <div className='row g-3'>
           {images.map((image) => {
             return (
               <div
@@ -42,15 +70,66 @@ export default function App() {
                 onClick={() => navigate(`/game/${image.name}`)}
                 key={image.name}
               >
-                <div className='card'>
+                <div className='card frosted'>
                   <img src={image.url} alt='' />
                   <div className='card-body'>
-                    <h2>{image.title}</h2>
+                    <h2 className='sleek-letters'>{image.title}</h2>
                   </div>
                 </div>
               </div>
             );
           })}
+        </div>
+        <div className='ranking mb-5 border border-1 rounded-3 frosted'>
+          <h2 className='sleek-letters text-center pt-2 pb-1'>Ranking</h2>
+          <ul
+            class='nav nav-tabs justify-content-around sleek-letters bg-white mb-2'
+            id='myTab'
+            role='tablist'
+          >
+            {rankingTabs &&
+              rankingTabs.map((tab, index) => {
+                return (
+                  <li class='nav-item'>
+                    <button
+                      class={`nav-link border-0 ${
+                        tabClicked == index ? 'fw-bold' : ''
+                      }`}
+                      id='profile-tab'
+                      type='button'
+                      role='tab'
+                      onClick={() => {
+                        updateRanking(tab.name);
+                        setTabClicked(index);
+                      }}
+                    >
+                      {tab.title}
+                    </button>
+                  </li>
+                );
+              })}
+          </ul>
+          <table className='sleek-letters table-responsive bg-transparent'>
+            <thead>
+              <tr>
+                <th>Ranking</th>
+                <th>Name</th>
+                <th>Time (seconds)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {ranking &&
+                ranking.map((record, index) => {
+                  return (
+                    <tr>
+                      <th>{index + 1}</th>
+                      <td>{record.playerName}</td>
+                      <td>{record.gameDurationSeconds}</td>
+                    </tr>
+                  );
+                })}
+            </tbody>
+          </table>
         </div>
       </main>
     </>

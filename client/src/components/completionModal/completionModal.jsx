@@ -36,7 +36,7 @@ export default function CompletionModal({ onClose, gameDuration, token }) {
   const handleUsernamePost = async (event) => {
     event.preventDefault();
 
-    if (username?.length >= 3)
+    if (username?.length >= 3 && username?.length <= 15)
       try {
         const response = await fetch(`${BASE_URL}/game/saveResults`, {
           method: 'POST',
@@ -53,7 +53,7 @@ export default function CompletionModal({ onClose, gameDuration, token }) {
       } catch {
         toast.error('Error saving the username.');
       }
-    else toast.error('Name has to be at least 3 characters long');
+    else toast.error('Name has to be between 3 and 15 character long');
   };
 
   return (
