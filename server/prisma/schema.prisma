@@ -31,6 +31,7 @@ model Character{
   image Image @relation(fields: [imageId], references: [id])
   xPercent Decimal
   yPercent Decimal
+  iconUrl String?
 }
 
 model GameSession{

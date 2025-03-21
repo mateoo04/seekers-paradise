@@ -7,6 +7,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { ToastContainer, Slide } from 'react-toastify';
 import Game from './components/game/Game';
 import App from './components/app/App';
+import Footer from './components/footer/Footer';
 
 const router = createBrowserRouter([
   {
@@ -22,9 +23,10 @@ const router = createBrowserRouter([
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <RouterProvider router={router} />
+    <Footer />
     <ToastContainer
       position='top-right'
-      autoClose={5000}
+      autoClose={1500}
       hideProgressBar={false}
       newestOnTop={false}
       closeOnClick={false}

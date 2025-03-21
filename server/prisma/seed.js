@@ -7,15 +7,23 @@ async function main() {
     data: {
       name: 'viking-raid',
       title: 'Viking Raid',
-      url: 'https://pyjgwcgwqpglbxwsfnbg.supabase.co/storage/v1/object/public/seekers-paradise//vikings.webp',
+      url: 'https://pyjgwcgwqpglbxwsfnbg.supabase.co/storage/v1/object/public/seekers-paradise//viking-raid.jpeg',
       characters: {
         create: [
           {
             name: 'Piggy',
             xPercent: 38.7,
             yPercent: 52.55,
+            iconUrl:
+              'https://pyjgwcgwqpglbxwsfnbg.supabase.co/storage/v1/object/public/seekers-paradise//piggy.jpeg',
           },
-          { name: 'Clown', xPercent: 35.9, yPercent: 32.7 },
+          {
+            name: 'Clown',
+            xPercent: 35.9,
+            yPercent: 32.7,
+            iconUrl:
+              'https://pyjgwcgwqpglbxwsfnbg.supabase.co/storage/v1/object/public/seekers-paradise//clown.jpeg',
+          },
         ],
       },
     },
@@ -32,8 +40,16 @@ async function main() {
             name: 'Wally',
             xPercent: 50,
             yPercent: 6.2,
+            iconUrl:
+              'https://pyjgwcgwqpglbxwsfnbg.supabase.co/storage/v1/object/public/seekers-paradise//wally.svg',
           },
-          { name: 'Jim', xPercent: 95.5, yPercent: 53.08 },
+          {
+            name: 'Jim',
+            xPercent: 95.5,
+            yPercent: 53.08,
+            iconUrl:
+              'https://pyjgwcgwqpglbxwsfnbg.supabase.co/storage/v1/object/public/seekers-paradise//jim.jpeg',
+          },
         ],
       },
     },
@@ -50,9 +66,23 @@ async function main() {
             name: 'King Boo',
             xPercent: 30.5,
             yPercent: 54.9,
+            iconUrl:
+              'https://pyjgwcgwqpglbxwsfnbg.supabase.co/storage/v1/object/public/seekers-paradise//king-boo.webp',
           },
-          { name: 'Princess Peach', xPercent: 30, yPercent: 34 },
-          { name: 'Cappy', xPercent: 59.5, yPercent: 76.1 },
+          {
+            name: 'Princess Peach',
+            xPercent: 30,
+            yPercent: 34,
+            iconUrl:
+              'https://pyjgwcgwqpglbxwsfnbg.supabase.co/storage/v1/object/public/seekers-paradise//Peach.webp',
+          },
+          {
+            name: 'Cappy',
+            xPercent: 59.5,
+            yPercent: 76.1,
+            iconUrl:
+              'https://pyjgwcgwqpglbxwsfnbg.supabase.co/storage/v1/object/public/seekers-paradise//cappy.webp',
+          },
         ],
       },
     },

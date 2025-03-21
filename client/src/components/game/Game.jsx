@@ -180,47 +180,75 @@ export default function Game() {
         onClick={handleOutsideClick}
       >
         {imageUrl ? (
-          <div className='img-container position-relative'>
-            <img
-              src={imageUrl}
-              alt=''
-              onClick={handleImageClick}
-              className='game-image'
-            />
-            <div
-              className='select-box position-absolute selection-element'
-              style={
-                boxPosition
-                  ? {
-                      ...boxPosition,
-                      width: selectBoxSize,
-                      height: selectBoxSize,
-                      display: isSelectionActive ? 'unset' : 'none',
-                    }
-                  : ''
-              }
-            ></div>
-            <div
-              className='list-group position-absolute selection-element'
-              style={{
-                ...dropdownPosition,
-                display: isSelectionActive ? 'unset' : 'none',
-              }}
-            >
-              {targets.map((target) => {
-                if (!target.isFound)
+          <>
+            <div className='bg-black text-white shadow-lg border-0 rounded-4 pt-2 pb-2 ps-3 pe-3 mb-3'>
+              <ul className='d-flex ps-0 align-items-center mb-0 gap-4'>
+                {targets.map((target) => {
                   return (
-                    <button
-                      onClick={() => handleCharacterClick(target)}
-                      className='list-group-item list-group-item-action'
-                      key={target.id}
+                    <li
+                      className={`list-group-item ${
+                        target.isFound ? 'opacity-50' : ''
+                      }`}
+                      key={'list-item-' + target.id}
                     >
+                      <img
+                        src={target.character.iconUrl}
+                        className='characterIcon me-2'
+                        alt=''
+                      />
                       {target.character.name}
-                    </button>
+                    </li>
                   );
-              })}
+                })}
+              </ul>
             </div>
-          </div>
+            <div className='img-container position-relative mb-5'>
+              <img
+                src={imageUrl}
+                alt=''
+                onClick={handleImageClick}
+                className='game-image'
+              />
+              <div
+                className='select-box position-absolute selection-element'
+                style={
+                  boxPosition
+                    ? {
+                        ...boxPosition,
+                        width: selectBoxSize,
+                        height: selectBoxSize,
+                        display: isSelectionActive ? 'unset' : 'none',
+                      }
+                    : ''
+                }
+              ></div>
+              <div
+                className='list-group position-absolute selection-element bg-black'
+                style={{
+                  ...dropdownPosition,
+                  display: isSelectionActive ? 'unset' : 'none',
+                }}
+              >
+                {targets.map((target) => {
+                  if (!target.isFound)
+                    return (
+                      <button
+                        onClick={() => handleCharacterClick(target)}
+                        className='list-group-item list-group-item-action bg-black text-white'
+                        key={target.id}
+                      >
+                        <img
+                          src={target.character.iconUrl}
+                          className='characterIcon me-2'
+                          alt=''
+                        />
+                        {target.character.name}
+                      </button>
+                    );
+                })}
+              </div>
+            </div>
+          </>
         ) : (
           ' '
         )}

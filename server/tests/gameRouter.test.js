@@ -64,7 +64,7 @@ describe('Game API Endpoints', () => {
       .post('/api/game/saveResults')
       .set('Content-Type', 'application/json')
       .set('Authorization', token)
-      .send({ username: 'Mateo' });
+      .send({ username: 'test' });
 
     expect(res.statusCode).toBe(401);
   });
@@ -88,7 +88,7 @@ describe('Game API Endpoints', () => {
       .post('/api/game/saveResults')
       .set('Content-Type', 'application/json')
       .set('Authorization', token)
-      .send({ username: 'Mateo' });
+      .send({ username: 'test' });
 
     expect(res.body.success).toBe(true);
   });

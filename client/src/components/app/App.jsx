@@ -73,7 +73,9 @@ export default function App() {
                 <div className='card frosted'>
                   <img src={image.url} alt='' />
                   <div className='card-body'>
-                    <h2 className='sleek-letters'>{image.title}</h2>
+                    <h2 className='sleek-letters user-select-none'>
+                      {image.title}
+                    </h2>
                   </div>
                 </div>
               </div>
