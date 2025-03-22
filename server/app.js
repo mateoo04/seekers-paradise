@@ -9,16 +9,6 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(
-  express.static(path.join(__dirname, 'public'), {
-    setHeaders: (res, path) => {
-      if (path.endsWith('.js')) {
-        res.setHeader('Content-Type', 'application/javascript');
-      }
-    },
-  })
-);
-
 app.use(cors());
 
 app.get('/', (req, res) =>
