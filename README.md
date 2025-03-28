@@ -20,7 +20,7 @@ A photo-tagging game built with <b>React (Vite)</b> on the frontend and <b>Expre
 Ensure you have the following installed:
 
 - Node.js (Latest LTS recommended)
-- npm or yarn
+- npm
 
 Clone the repository:
 
@@ -35,13 +35,13 @@ Navigate to the client folder and install dependencies:
 
 ```
 cd client
-npm install  # or yarn install
+npm install
 ```
 
 To start the frontend development server:
 
 ```
-npm run dev  # or yarn dev
+npm run dev
 ```
 
 This will start the Vite development server at http://localhost:5173/ (default).
@@ -52,7 +52,7 @@ Navigate to the server folder and install dependencies:
 
 ```
 cd ../server
-npm install  # or yarn install
+npm install
 npx prisma generate
 npx prisma migrate dev
 npx prisma db seed
@@ -61,7 +61,7 @@ npx prisma db seed
 To start the backend server:
 
 ```
-npm run dev  # or yarn dev
+npm run dev
 ```
 
 By default, the Express server runs at http://localhost:4000/.

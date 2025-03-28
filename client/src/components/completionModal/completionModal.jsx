@@ -74,8 +74,8 @@ export default function CompletionModal({ onClose, gameDuration, token }) {
           <div className='modal-header'>
             <h3 className='modal-title h5'>
               Congrats on finding everyone in
-              {gameDuration / 1000 >= 60
-                ? ` ${Math.round((gameDuration / 1000) * 100) / 100} minutes`
+              {gameDuration >= 60000
+                ? ` ${Math.round((gameDuration / 60000) * 100) / 100} minutes`
                 : ` ${Math.round(gameDuration / 1000)} seconds`}
               !
             </h3>{' '}
